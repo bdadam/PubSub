@@ -96,4 +96,5 @@ describe('PubSub', function() {
             expect(fired).toEqual(1);
         });
     });
+
 });

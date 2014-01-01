@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="charset" content="utf-8"/>
+    <title>PubSub Test</title>
+</head>
+<body>
+    <script src="../src/pubsub.js"></script>
+
+    <button id="publisher">Publish a random number</button>
+    <hr/>
+    <div id="subscriber">No random number published yet</div>
+
+    <script>
+        var publisher = document.getElementById('publisher');
+
+        publisher.addEventListener('click', function() {
+            PubSub.publish('test', {
+                rnd: Math.random()
+            });
+        });
+
+        var subscriber = document.getElementById('subscriber');
+
+        PubSub.subscribe('test', function(event, data) {
+            subscriber.innerHTML = 'The recently published random number: ' + data.rnd;
+        });
+    </script>
+</body>
+</html>
