@@ -1,99 +1,95 @@
 describe('PubSub', function() {
     "use strict";
 
-    var eventName = 'test';
+    var eventName, otherEventName;
 
-    describe('When subscribing before publishing', function() {
-
-        it('should fire the events', function() {
-            var fired = 0;
-            var firedEventName;
-            var firedEventData;
-
-            PubSub.subscribe(eventName, function(eventName, eventData) {
-                fired++;
-                firedEventName = eventName;
-                firedEventData = eventData;
-            });
-
-            PubSub.publish(eventName, { x: 1 });
-
-            expect(fired).toEqual(1);
-            expect(firedEventName).toEqual(eventName);
-            expect(firedEventData).toBeDefined();
-            expect(firedEventData.x).toEqual(1);
-
-            PubSub.publish(eventName);
-            PubSub.publish(eventName);
-
-            expect(fired).toEqual(3);
-        });
+    beforeEach(function() {
+        eventName = Math.random().toString();
+        otherEventName = Math.random().toString();
     });
 
-    describe('When publishing before subscribing', function() {
+    describe('When subscribing', function() {
 
-        it('should not fire any event', function() {
-            var fired = 0;
-
-            PubSub.publish(eventName);
-            PubSub.publish(eventName);
-
-            PubSub.subscribe(eventName, function() {
-                fired++;
+        it('should work correctly', function() {
+            var eventData = { x: 1, y: 2 };
+            var spy = jasmine.createSpy('event handler function').andCallFake(function() {
+                expect(this.event).toEqual(eventName);
+                expect(this.args).toEqual([eventData]);
             });
 
-            expect(fired).toEqual(0);
+            // subscribing to the event among some dummy functions
+            PubSub.subscribe('dummy', function() {});
+            PubSub.subscribe('dummy2', function() {});
+            PubSub.subscribe(eventName, function() {});
+            PubSub.subscribe(eventName, spy);
+            PubSub.subscribe(eventName, function() {});
+
+            PubSub.publish(eventName, eventData);
+            PubSub.publish(eventName, eventData);
+
+            expect(spy).toHaveBeenCalled();
+            expect(spy.callCount).toEqual(2);
+        });
+
+        it('should set the correct context for the event callback', function() {
+            var a = Math.random(), b = 'sadfsdsdf', c = Math.random() + 'asdfsdf';
+
+            var fn = function() {
+                expect(this.event).toEqual(eventName);
+                expect(this.args).toEqual([a, b, c]);
+            };
+
+            PubSub.subscribe(eventName, fn);
+            PubSub.publish(eventName, a, b, c);
         });
     });
 
     describe('When unsubscribing', function() {
-        it('should not fire the event anymore', function() {
-            var fired = 0;
+        it('should unsubscribe function from events', function() {
+            var spy = jasmine.createSpy();
 
-            var fn = function() {
-                fired++;
-            };
-
-            PubSub.subscribe(eventName, fn);
+            PubSub.subscribe(eventName, spy);
+            PubSub.unsubscribe(eventName, spy);
             PubSub.publish(eventName);
 
-            expect(fired).toEqual(1);
+            expect(spy).not.toHaveBeenCalled();
+        });
 
-            PubSub.unsubscribe(eventName, fn);
+        it('should not unsubscribe other functions', function() {
+            var spy = jasmine.createSpy();
+            var spy2 = jasmine.createSpy();
+
+            PubSub.subscribe(eventName, spy);
+            PubSub.subscribe(eventName, spy2);
+            PubSub.unsubscribe(eventName, spy);
             PubSub.publish(eventName);
 
-            expect(fired).toEqual(1);
+            expect(spy).not.toHaveBeenCalled();
+            expect(spy2).toHaveBeenCalled();
         });
     });
 
-    describe('When using namespaces in event names', function() {
-        it('should also fire for event names which are more specific', function() {
+    describe('When unsubscribing without event name', function() {
 
-            var fired = 0;
+        it('should unsubscribe all occurrences of the function', function() {
+            var spy = jasmine.createSpy();
+            PubSub.subscribe(eventName, spy);
+            PubSub.subscribe(otherEventName, spy);
 
-            var fn = function() {
-                fired++;
-            };
+            PubSub.unsubscribe(spy);
 
-            PubSub.subscribe('A:B', fn);
-            PubSub.publish('A:B');
-            PubSub.publish('A:B:C');
+            PubSub.publish(eventName);
+            PubSub.publish(otherEventName);
 
-            expect(fired).toEqual(2);
+            expect(spy).not.toHaveBeenCalled();
         });
+    });
 
-        it('should not fire for event names which are less specific', function() {
-            var fired = 0;
-
-            var fn = function() {
-                fired++;
-            };
-
-            PubSub.subscribe('A:B', fn);
-            PubSub.publish('A');
-            PubSub.publish('A:B');
-
-            expect(fired).toEqual(1);
+    describe('When accessing PubSub methods', function() {
+        it('short aliases should also be defined', function() {
+            expect(PubSub.pub).toBe(PubSub.publish);
+            expect(PubSub.sub).toBe(PubSub.subscribe);
+            expect(PubSub.unsub).toBe(PubSub.unsubscribe);
         });
     });
 
