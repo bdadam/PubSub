@@ -1,0 +1,22 @@
+{
+  "name": "PubSub",
+  "version": "1.0.0",
+  "homepage": "https://github.com/bdadam/PubSub",
+  "authors": [
+    "Adam Beres-Deak <me@bdadam.com>"
+  ],
+  "description": "A simple, small and dependency-free PubSub module in JavaScript",
+  "main": "pubsub.min.js",
+  "keywords": [
+    "pubsub",
+    "events",
+    "javascript"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ]
+}
