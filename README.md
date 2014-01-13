@@ -61,3 +61,6 @@ PubSub.publish(event [, data, data, data...])
  */
 PubSub.unsubscribe([event], handler)
 ```
+
+
+This code is licensed under the MIT license. If you like it, please drop a line.
