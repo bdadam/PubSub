@@ -50,7 +50,7 @@ PubSub.subscribe(event, fn)
 
 /* Publishes an event with the supplied message data object[s].
  * @param {string} event
- * @param {anything} data - any number of event data objects. They are all passed to the handler functions.
+ * @param {anything} data - any number of event data objects.
  */
 PubSub.publish(event [, data, data, data...])
 
