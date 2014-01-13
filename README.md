@@ -61,6 +61,12 @@ PubSub.publish(event [, data, data, data...])
  */
 PubSub.unsubscribe([event], handler)
 ```
+There are also some shorter aliases for convenience
+```javascript
+PubSub.sub(event, fn)
+PubSub.pub(event [, data, data, data...])
+PubSub.unsub([event], handler)
+```
 
 ##License
 This code is licensed under the MIT license. If you like it, please drop a line.
