@@ -4,7 +4,16 @@ PubSub
 A simple, small (under 1kb minified) PubSub implementation in JavaScript. It is completely dependency-free and can be used as a RequireJS module.
 
 ##How to install
-Simply include the script file
+It you use bower, simply install the component with it:
+```
+bower install pubsub
+```
+and then include the script file in yout html:
+```html
+<script src="bower_components/pubsub/pubsub.min.js"></script>
+```
+
+Without bower just clone/download this repository and include the script file in your html:
 ```html
 <script src="pubsub.min.js"></script>
 ```
