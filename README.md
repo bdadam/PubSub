@@ -42,7 +42,7 @@ The API is very simple.
 ```javascript
 /* Subscribes a function to a specific event.
  * The function receives the event data object[s] as arguments.
- * The scope of the handler function contains event and args. {event: event, args: [data, data, ...]}
+ * The scope of the handler function contains event and args. {event: event, args: [data, ...]}
  * @param {string} event
  * @param {function} fn
  */
